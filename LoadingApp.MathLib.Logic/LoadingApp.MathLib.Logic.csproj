@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <AssemblyName>LoadingApp.MathLib.Logic</AssemblyName>
+    <RootNamespace>LoadingApp.MathLib.Logic</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\LoadingApp.Data\LoadingApp.Data.csproj" />
+  </ItemGroup>
+
+</Project>

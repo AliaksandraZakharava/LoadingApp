@@ -1,0 +1,206 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <link href="~/Content/Site.css" rel="stylesheet" />
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/coffee-script/1.7.1/coffee-script.min.js"></script>
+    <script src="~/Scripts/jquery-1.10.2.min.js"></script>
+    <script src="~/Scripts/seen.min.js"></script>
+</head>
+<body>
+    <div class="title">Available goods:</div>
+    <div id="goods"></div>
+
+    <div class="title">Available containers:</div>
+    <div id="containers"></div>
+    
+    <div class="operation-error"></div>
+
+    <div class="title">Test combination: </div>
+    <div class="test-combination-info">Fridge - 15, Washing machine - 20, Electric kettle - 40 for Container 1<br /></div>
+
+    <input id="placeOrderButton" type="button" value="Place order" />
+
+    <div class="placing-plan-menu">
+        <div class="title"> PLACING PLAN </div><br />
+        <div> Input the number of row, to see it detailed: </div>
+        <div class="placing-plan-menu-content">
+            <div> Row:&nbsp;&nbsp; <input type="text" id="lineNumberInput" placeholder="0" /></div>
+            <div> from: &nbsp;&nbsp;<span id="linesTotalQuantity"></span></div>
+            <div><input type="button" id="filterRender" value="Show" /></div>
+            <div><input type="button" id="resetRender" value="Reset" /></div>
+        </div>
+        <div class="placing-plan-menu-error"></div>
+    </div>
+
+    <div class="placing-plan-render-table">
+        <table>
+            <tr><td>Perspective view</td></tr>
+            <tr><td><canvas width="900" height="600" id="seen-canvas-0"></canvas></td></tr>
+        </table>
+        <table>
+            <tr>
+                <td><canvas width="350" height="350" id="seen-canvas-1"></canvas></td>
+                <td><canvas width="350" height="350" id="seen-canvas-2"></canvas></td>
+            </tr>
+            <tr><td>Top view</td><td>Front View</td></tr>
+            <tr>
+                <td><canvas width="350" height="350" id="seen-canvas-3"></canvas></td>
+                <td><canvas width="350" height="350" id="seen-canvas-4"></canvas></td>
+            </tr>
+            <tr><td>Back view</td><td>Right view</td></tr>
+        </table>
+    </div>
+</body>
+
+<script>
+    $(document).ready(function () {
+        $('.placing-plan-menu').hide();
+        $('.placing-plan-render-table').hide();
+
+        $.ajax({
+            url: '/api/data/boxes',
+            type: 'GET',
+            dataType: 'json',
+            success: function (data) {
+                $.each(data, function (index) {
+                    $('#goods').append('<div class="item"><div class="item-name">' +
+                        data[index].Name +
+                        '</div><div class="item-order-quantity"><input type="text" placeholder="Put item order quantity"/></div></div>');
+                });
+            },
+            error: function(message) {
+                $(".operation-error").text(message.responseText);
+            }
+        });
+
+        $.ajax({
+            url: '/api/data/containers',
+            type: 'GET',
+            dataType: 'json',
+            success: function (data) {
+                $.each(data, function (index) {
+                    $('#containers').append('<div class="item"><input type="radio" value="' + data[index].Name + '">&nbsp;&nbsp;&nbsp;' + data[index].Name + '</div>');
+                });
+            },
+            error: function(message) {
+                $(".operation-error").text(message.responseText);
+            }
+        });
+    });
+
+    $(document).on("click", "#placeOrderButton", function ()
+    {
+        $(".operation-error").text("");
+
+        var dataToSend = {
+            "Boxes": collectGoodsData(),
+            "Container": collectContainerData()
+        };
+
+        if ($(".operation-error").text() !== "") return;
+
+        $.ajax({
+            url: '/api/placingPlan',
+            type: 'GET',
+            contentType: "application/json",
+            data: dataToSend,
+            success: function(data) {
+                $('.placing-plan-menu').show();
+                $('.placing-plan-render-table').show();
+                $(".operation-error").text("SUCCESS");
+            },
+            error: function() {
+                $(".operation-error").text("Operation failed.");
+            }
+        });
+    });
+
+    function collectGoodsData() {
+        var dataDictionary = {};
+        var goods = $('#goods .item');
+
+        $.each(goods, function (key, value) {
+            var itemValue = $(value).find('.item-order-quantity input').val();
+
+            if (itemValue !== "" || parseInt(itemValue) > 0) {
+                var itemName = $(value).find('.item-name').text().trim();
+                dataDictionary[itemName] = parseInt(itemValue);
+            }
+        });
+
+        return dataDictionary;
+    }
+
+    function collectContainerData() {
+        var containers = $('#containers .item');
+
+        var checkedContainerName = "";
+
+        $.each(containers, function (key, value) {
+            var isChecked = $(value).find('input').is(':checked');
+
+            if (isChecked) {
+                checkedContainerName = $(value).text().trim();
+            }
+        });
+
+        if (checkedContainerName === "") {
+            $(".operation-error").text("No container is chosen.");
+        }
+
+        return checkedContainerName;
+    }
+
+
+</script>
+
+<!--script type="text/coffeescript">
+    $ ->
+        # DOM ready events
+        $('.placing-plan-menu').hide();
+        $('.placing-plan-render-table').hide();
+
+        $.ajax '/api/data/boxes',
+          type: 'GET'
+          dataType: 'json'
+          success: (data) ->
+              $.each data, (index, item) ->
+                    $('#goods').append('<div class="item"><div class="item-name">' + item.Name + '</div><div class="item-order-quantity"><input type="text" placeholder="Put item order quantity"/></div></div>');
+
+        $.ajax '/api/data/containers',
+          type: 'GET'
+          dataType: 'json'
+          success: (data) ->
+               $.each data, (index, item) ->
+                     $('#containers').append('<div class="item"><input type="radio" value="'+ item.Name + '">&nbsp;&nbsp;&nbsp;'+ item.Name +'</div>');
+
+        # Action events
+        $(document).on 'click', '#placeOrderButton', ->
+          dataDictionary = collectGoodsData()
+
+        # Auxillary methods
+       collectGoodsData = ->
+          dataDictionary = {}
+          goods = $('#goods .item')
+          $.each goods, (key, value) ->
+            itemValue = $(value).find('.item-order-quantity input').val()
+            if itemValue != '' or parseInt(itemValue) > 0
+              itemName = $(value).find('.item-name').text().trim()
+              dataDictionary[itemName] = parseInt(itemValue)
+            return
+          data =
+            'Boxes': dataDictionary
+            'Container': 'Container name'
+          data
+
+              #$.ajax '/api/placingPlan',
+              #  type: 'GET'
+              #  contentType:"application/json"
+              #  data: JSON.stringify(dataToSend)
+              #  success: (data) ->
+              #      $('.placing-plan-menu').show();
+              #      $('.placing-plan-render-table').show();
+              #      render(-1)
+</script-->
