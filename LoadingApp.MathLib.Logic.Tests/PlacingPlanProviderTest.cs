@@ -16,11 +16,11 @@ namespace LoadingApp.MathLib.Logic.Tests
 
         public PlacingPlanProviderTest()
         {
-            var boxA = new BoxQuantityPair { Box = new Box("A", length: 60, width: 60, height: 200), Quantity = 15 };
-            var boxB = new BoxQuantityPair { Box = new Box("B", length: 55, width: 60, height: 80), Quantity = 20 };
-            var boxC = new BoxQuantityPair { Box = new Box("C", length: 20, width: 20, height: 30), Quantity = 40 };
+            var boxA = new BoxQuantityPair { Box = new Box("F", length: 60, width: 60, height: 200), Quantity = 8 };
+            var boxB = new BoxQuantityPair { Box = new Box("WM", length: 55, width: 60, height: 80), Quantity = 20 };
+            var boxC = new BoxQuantityPair { Box = new Box("EK", length: 20, width: 20, height: 30), Quantity = 40 };
 
-            _container = new Container("Name1", length: 400, width: 300, height: 400);
+            _container = new Container("Name1", length: 400, width: 300, height: 300);
 
             _boxesSet = new List<BoxQuantityPair> { boxA, boxB, boxC };
 

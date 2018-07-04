@@ -38,6 +38,15 @@ div {
     font-weight: bold;
 }
 
+.title {
+    margin-top: 20px;
+}
+
+.comment {
+    font-size: 15px;
+    font-style: italic;
+}
+
 #goods, #containers, .placing-plan-render {
     flex-direction: column;
     padding: 5px;
@@ -84,7 +93,6 @@ div {
     color: #b22222;
 }
 
-.test-combination-info,
 .operation-error {
     margin-bottom: 20px;
 }

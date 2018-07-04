@@ -25,9 +25,9 @@ namespace LoadingApp.RenderDataProvider
 
                 Container = new ContainerRenderingModel
                 {
-                    Name = modelingResult.Name,
-                    Width = modelingResult.Width + Interval,
-                    Length = modelingResult.Length + Interval
+                    Name = modelingResult.Container.Name,
+                    Width = modelingResult.Container.Width + Interval,
+                    Length = modelingResult.Container.Length + Interval
                 }
             };
 

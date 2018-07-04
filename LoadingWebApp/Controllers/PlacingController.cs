@@ -29,14 +29,14 @@ namespace LoadingWebApp.Controllers
             _predefinedDataProvider = predefinedDataProvider ?? throw new ArgumentNullException(nameof(predefinedDataProvider));
         }
 
+        [HttpPost]
         [Route("~/api/placingPlan")]
         [ResponseType(typeof(VisualizationModel))]
-        public IHttpActionResult Get(PlacingModelRequest placingModelRequest)
+        public IHttpActionResult GetPlacingPlan(PlacingModelRequest placingModelRequest)
         {
-            if (placingModelRequest == null || placingModelRequest.Boxes == null ||
-                placingModelRequest.Container == null)
+            if (placingModelRequest == null || placingModelRequest.Boxes == null || placingModelRequest.Container == null)
             {
-                throw new ArgumentException("Invalid passed data.");
+                throw new ArgumentNullException("Null passed data.");
             }
 
             var boxes = GetBoxesListFromRequest(placingModelRequest);

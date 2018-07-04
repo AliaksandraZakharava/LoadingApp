@@ -187,7 +187,7 @@ namespace LoadingApp.MathLib.Logic.MathModelingProviders
 
                         if (!DoesMeetTheVolumeLimit(container) ||
                             !DoesMeetTheWeightLimit(container) ||
-                            quantity > box.OrderQuantity)
+                            _modelingResults[i].Quantity > box.OrderQuantity)
                         {
                             _modelingResults[i].Quantity--;
                             isMaxPossibleQuantity = true;
@@ -209,26 +209,12 @@ namespace LoadingApp.MathLib.Logic.MathModelingProviders
 
         private double CountTotalBoxesVolume(List<BoxQuantityPair> boxesSet)
         {
-            double volume = 0;
-
-            foreach (var box in boxesSet)
-            {
-                volume += box.Box.Volume * box.Quantity;
-            }
-
-            return volume;
+            return boxesSet.Sum(box => box.Box.Volume * box.Quantity);
         }
 
         private double CountTotalBoxesWeight(List<BoxQuantityPair> boxesSet)
         {
-            double weight = 0;
-
-            foreach (var box in boxesSet)
-            {
-                weight += box.Box.Weight * box.Quantity;
-            }
-
-            return weight;
+            return boxesSet.Sum(box => box.Box.Weight * box.Quantity);
         }
 
         private void ReverseSweep(Box box, Container container)

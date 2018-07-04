@@ -13,9 +13,9 @@ namespace LoadingApp.DataProvider
 
             return new List<Box>
             {
-                new Box("Fridge", length: 60, width: 60, height: 200),
-                new Box("Washing machine", length: 55, width: 60, height: 80),
-                new Box("Electric kettle", length: 20, width: 20, height: 30)
+                new Box("Fridge", length: 60, width: 60, height: 200, cost: 100, weight: 90),
+                new Box("Washing machine", length: 55, width: 60, height: 80, cost: 70, weight: 65),
+                new Box("Electric kettle", length: 20, width: 20, height: 30, cost: 20, weight: 2)
             };
         }
 
@@ -25,8 +25,8 @@ namespace LoadingApp.DataProvider
 
             return new List<Container>
             {
-                new Container("Container type A", 50D, 300, 200, 200),
-                new Container("Container type B", 100D, 400, 300, 200)
+                new Container("Container type A", 5000D, 400, 300, 300),
+                new Container("Container type B", 10000D, 400, 300, 200)
             };
         }
 

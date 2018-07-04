@@ -10,15 +10,15 @@
 </head>
 <body>
     <div class="title">Available goods:</div>
+
+    <div class="test-combination-info comment"> Test combination: Fridge - 15, Washing machine - 20, Electric kettle - 40 for Container type A</div>
+
     <div id="goods"></div>
 
     <div class="title">Available containers:</div>
     <div id="containers"></div>
-    
-    <div class="operation-error"></div>
 
-    <div class="title">Test combination: </div>
-    <div class="test-combination-info">Fridge - 15, Washing machine - 20, Electric kettle - 40 for Container 1<br /></div>
+    <div class="operation-error"></div>
 
     <input id="placeOrderButton" type="button" value="Place order" />
 
@@ -37,7 +37,7 @@
     <div class="placing-plan-render-table">
         <table>
             <tr><td>Perspective view</td></tr>
-            <tr><td><canvas width="900" height="600" id="seen-canvas-0"></canvas></td></tr>
+            <tr><td><canvas width="1000" height="800" id="seen-canvas-0"></canvas></td></tr>
         </table>
         <table>
             <tr>
@@ -53,9 +53,10 @@
         </table>
     </div>
 </body>
-
-<script>
-    $(document).ready(function () {
+</html>
+<script type="text/coffeescript">
+    # JS functions
+    `$(document).ready(function () {
         $('.placing-plan-menu').hide();
         $('.placing-plan-render-table').hide();
 
@@ -70,7 +71,7 @@
                         '</div><div class="item-order-quantity"><input type="text" placeholder="Put item order quantity"/></div></div>');
                 });
             },
-            error: function(message) {
+            error: function (message) {
                 $(".operation-error").text(message.responseText);
             }
         });
@@ -84,14 +85,13 @@
                     $('#containers').append('<div class="item"><input type="radio" value="' + data[index].Name + '">&nbsp;&nbsp;&nbsp;' + data[index].Name + '</div>');
                 });
             },
-            error: function(message) {
+            error: function (message) {
                 $(".operation-error").text(message.responseText);
             }
         });
     });
 
-    $(document).on("click", "#placeOrderButton", function ()
-    {
+    $(document).on("click", "#placeOrderButton", function () {
         $(".operation-error").text("");
 
         var dataToSend = {
@@ -99,22 +99,42 @@
             "Container": collectContainerData()
         };
 
-        if ($(".operation-error").text() !== "") return;
+        if (dataToSend["Container"] === "") return;
 
         $.ajax({
             url: '/api/placingPlan',
-            type: 'GET',
+            type: 'POST',
             contentType: "application/json",
-            data: dataToSend,
-            success: function(data) {
+            data: JSON.stringify(dataToSend),
+            success: function (data) {
                 $('.placing-plan-menu').show();
                 $('.placing-plan-render-table').show();
-                $(".operation-error").text("SUCCESS");
+                $("#linesTotalQuantity").text(data.Boxes[data.Boxes.length-1].LineNumber);
+                renderingData = data;
+                render(-1);
             },
-            error: function() {
-                $(".operation-error").text("Operation failed.");
+            error: function (data) {
+                var errorText = "";
+                if (data["responseJSON"]["ExceptionMessage"] === undefined) errorText = data["responseJSON"]["Message"];
+                else errorText = data["responseJSON"]["ExceptionMessage"];
+                $(".operation-error").text("Operation failed. " + errorText);
             }
         });
+    });
+
+    $(document).on("click", "#resetRender", function () {
+        $(".renderError").text("");
+        render(-1);
+    });
+
+    $(document).on("click", "#filterRender", function() {
+        $(".renderError").text("");
+
+        var lineNumber = parseInt($("#lineNumberInput").val().trim());
+
+        if (lineNumber < 0 || lineNumber > renderingData.Boxes[renderingData.Boxes.length-1].LineNumber)
+            $(".renderError").text("Invalid line number");
+        else render(lineNumber);
     });
 
     function collectGoodsData() {
@@ -151,56 +171,67 @@
         }
 
         return checkedContainerName;
-    }
+    }`
 
+    # CoffeeScript functions
 
+    dims = [
+      [1000, 800]
+      [100, 600]
+      [600, 600]
+      [100, 550]
+      [600, 550]
+    ]
+
+    renderingData = {}
+
+    selectBoxesOfALine = (lineNumber) ->
+      if lineNumber < 0 or lineNumber > renderingData.Boxes[renderingData.Boxes.length-1].LineNumber
+        renderingData
+      else
+        containerData = renderingData.Container
+        sortedData = (box for box in renderingData.Boxes when box.LineNumber == lineNumber)
+        toRenderData = {
+          Boxes : sortedData
+          Container : containerData
+        }
+        toRenderData
+
+    render = (lineNumber) ->
+      dataToRender = selectBoxesOfALine(lineNumber)
+      create3DModel(dataToRender)
+      return
+
+    create3DModel = (renderingData) ->
+      # creating model
+      model = seen.Models.default()
+      model.add(seen.Shapes.rectangle(seen.P(0, 0, 0), seen.P(renderingData.Container.Width, renderingData.Container.Length, 2)))
+      for item in renderingData.Boxes
+        model.add(seen.Shapes.rectangle(seen.P(item.Xo + 3, item.Yo + 3, item.Zo + 3), seen.P(item.X1 - 3, item.Y1 - 3, item.Z1 - 3)).fill(item.Color))
+      # creating scenes
+      scenes = [0...5].map (i) -> new seen.Scene
+        model     : model
+        viewport  : seen.Viewports.center(dims[i]...)
+      scenes[0].camera.scale(0.9) # perspective view
+      scenes[1].camera.scale(0.7) # top view
+      scenes[2].camera.scale(0.7) # front view
+      scenes[2].camera.rotx(-Math.PI/2)
+      scenes[2].camera.roty(-Math.PI)
+      scenes[3].camera.scale(0.9) # back view
+      scenes[3].camera.rotx(-Math.PI/2)
+      scenes[4].camera.scale(0.9) # side view
+      scenes[4].camera.rotx(-Math.PI/2)
+      scenes[4].camera.roty(Math.PI/2)
+      # rendering scenes
+      contexts = scenes.map (scene,i) -> seen.Context("seen-canvas-#{i}", scene)
+      mainContext = seen.Context('seen-canvas-0', scenes[0]).render()
+      renderAll = -> context.render() for context in contexts
+      renderAll()
+      # dragging
+      dragger = new seen.Drag('seen-canvas-0')
+      dragger.on('drag.rotate', (e) ->
+        xform = seen.Quaternion.xyToTransform(e.offsetRelative...)
+        model.transform(xform)
+        mainContext.render()
+      )
 </script>
-
-<!--script type="text/coffeescript">
-    $ ->
-        # DOM ready events
-        $('.placing-plan-menu').hide();
-        $('.placing-plan-render-table').hide();
-
-        $.ajax '/api/data/boxes',
-          type: 'GET'
-          dataType: 'json'
-          success: (data) ->
-              $.each data, (index, item) ->
-                    $('#goods').append('<div class="item"><div class="item-name">' + item.Name + '</div><div class="item-order-quantity"><input type="text" placeholder="Put item order quantity"/></div></div>');
-
-        $.ajax '/api/data/containers',
-          type: 'GET'
-          dataType: 'json'
-          success: (data) ->
-               $.each data, (index, item) ->
-                     $('#containers').append('<div class="item"><input type="radio" value="'+ item.Name + '">&nbsp;&nbsp;&nbsp;'+ item.Name +'</div>');
-
-        # Action events
-        $(document).on 'click', '#placeOrderButton', ->
-          dataDictionary = collectGoodsData()
-
-        # Auxillary methods
-       collectGoodsData = ->
-          dataDictionary = {}
-          goods = $('#goods .item')
-          $.each goods, (key, value) ->
-            itemValue = $(value).find('.item-order-quantity input').val()
-            if itemValue != '' or parseInt(itemValue) > 0
-              itemName = $(value).find('.item-name').text().trim()
-              dataDictionary[itemName] = parseInt(itemValue)
-            return
-          data =
-            'Boxes': dataDictionary
-            'Container': 'Container name'
-          data
-
-              #$.ajax '/api/placingPlan',
-              #  type: 'GET'
-              #  contentType:"application/json"
-              #  data: JSON.stringify(dataToSend)
-              #  success: (data) ->
-              #      $('.placing-plan-menu').show();
-              #      $('.placing-plan-render-table').show();
-              #      render(-1)
-</script-->

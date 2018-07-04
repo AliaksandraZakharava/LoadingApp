@@ -52,7 +52,7 @@ namespace LoadingApp.MathLib.Logic.MathModelingProviders
 
             _boxesQuantityBeforePlacing = CountTotalBoxesQuantity(boxesSet);
 
-            SortBoxesByVolumeDesc(boxesSet);
+            //SortBoxesByVolumeDesc(boxesSet);
 
             _distanceLeftToTheWall = container.Width;
 
