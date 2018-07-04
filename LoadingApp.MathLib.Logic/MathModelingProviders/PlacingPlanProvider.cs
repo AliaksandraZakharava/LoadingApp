@@ -52,7 +52,7 @@ namespace LoadingApp.MathLib.Logic.MathModelingProviders
 
             _boxesQuantityBeforePlacing = CountTotalBoxesQuantity(boxesSet);
 
-            //SortBoxesByVolumeDesc(boxesSet);
+            boxesSet = SortBoxesByBaseAreaDesc(boxesSet);
 
             _distanceLeftToTheWall = container.Width;
 
@@ -133,9 +133,9 @@ namespace LoadingApp.MathLib.Logic.MathModelingProviders
             return totalBoxesQuantity;
         }
 
-        private void SortBoxesByVolumeDesc(List<BoxQuantityPair> boxesSet)
+        private List<BoxQuantityPair> SortBoxesByBaseAreaDesc(List<BoxQuantityPair> boxesSet)
         {
-            boxesSet.OrderByDescending(pair => pair.Box.Volume);
+            return boxesSet.OrderByDescending(pair => pair.Box.BaseArea).ToList();
         }
 
         private void RotateBox(Box box)
