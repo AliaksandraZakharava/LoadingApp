@@ -50,12 +50,9 @@ namespace LoadingApp.MathLib.Logic.MathModelingProviders
                 throw new ArgumentException("Passed data contains invalid content: length, width or height of a box or a container can not be 0 or negative.");
             }
 
-            _boxesQuantityBeforePlacing = CountTotalBoxesQuantity(boxesSet);
-
             boxesSet = SortBoxesByBaseAreaDesc(boxesSet);
 
             _distanceLeftToTheWall = container.Width;
-
             while (_distanceLeftToTheWall > 0 && boxesSet.Any(b => b.Quantity > 0))
             {
                 foreach (var placedBox in boxesSet.Where(b => b.Quantity != 0))
@@ -88,15 +85,7 @@ namespace LoadingApp.MathLib.Logic.MathModelingProviders
 
                 _isFirstRow = false;
             }
-
-            _boxesQuantityAfterPlacing = CountTotalBoxesQuantity(boxesSet);
-
             return _rowsSet;
-        }
-
-        internal double CountExecutionPercent()
-        {
-            return Double.Parse((100 - (double)_boxesQuantityAfterPlacing / _boxesQuantityBeforePlacing * 100).ToString("F2"));
         }
 
         #region Private methods

@@ -15,7 +15,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>LoadingWebApp</RootNamespace>
     <AssemblyName>LoadingWebApp</AssemblyName>
-    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <MvcBuildViews>false</MvcBuildViews>
     <UseIISExpress>true</UseIISExpress>
     <Use64BitIISExpress />
@@ -59,13 +59,11 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
-    <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.ApplicationServices" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
-    <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Web" />
     <Reference Include="System.Web.Abstractions" />
     <Reference Include="System.Web.Routing" />
@@ -119,7 +117,6 @@
       <Private>True</Private>
       <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
     </Reference>
-    <Reference Include="System.Xml.Linq" />
     <Reference Include="WebGrease">
       <Private>True</Private>
       <HintPath>..\packages\WebGrease.1.5.2\lib\WebGrease.dll</HintPath>
@@ -224,7 +221,7 @@
       <Name>LoadingApp.Data</Name>
     </ProjectReference>
     <ProjectReference Include="..\LoadingApp.MathLib.Logic\LoadingApp.MathLib.Logic.csproj">
-      <Project>{5a55a90b-a589-4a10-b18d-959d516145eb}</Project>
+      <Project>{49bbdff4-28bf-42d9-ad85-21e0bded00e9}</Project>
       <Name>LoadingApp.MathLib.Logic</Name>
     </ProjectReference>
     <ProjectReference Include="..\LoadingApp.RenderDataProvider\LoadingApp.RenderDataProvider.csproj">

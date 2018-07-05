@@ -21,7 +21,7 @@ namespace LoadingApp.RenderDataProvider
         {
             var result = new VisualizationModel
             {
-                ExecutionPercent = modelingResult.ExecutionPercent,
+                ExecutionPercent = modelingResult.ExecutionPercent.ToString("F"),
 
                 Container = new ContainerRenderingModel
                 {

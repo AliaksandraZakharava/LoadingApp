@@ -36,7 +36,7 @@ namespace LoadingApp.RenderDataProvider.Models
 
         public ContainerRenderingModel Container { get; set; }
 
-        public double ExecutionPercent { get; set; }
+        public string ExecutionPercent { get; set; }
 
         public VisualizationModel()
         {

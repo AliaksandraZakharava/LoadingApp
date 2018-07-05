@@ -34,7 +34,7 @@ div {
     display: flex;
 }
 
-.title, #linesTotalQuantity, table {
+.title, #linesTotalQuantity, table, .execution-percent-info {
     font-weight: bold;
 }
 

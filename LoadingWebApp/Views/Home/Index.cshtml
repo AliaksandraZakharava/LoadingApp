@@ -23,7 +23,8 @@
     <input id="placeOrderButton" type="button" value="Place order" />
 
     <div class="placing-plan-menu">
-        <div class="title"> PLACING PLAN </div><br />
+        <div class="title"> PLACING PLAN</div><br />
+        <div class="execution-percent-info">Execution percent:&nbsp;<span id="execution-percent"></span>&nbsp;%</div>
         <div> Input the number of row, to see it detailed: </div>
         <div class="placing-plan-menu-content">
             <div> Row:&nbsp;&nbsp; <input type="text" id="lineNumberInput" placeholder="0" /></div>
@@ -110,6 +111,7 @@
                 $('.placing-plan-menu').show();
                 $('.placing-plan-render-table').show();
                 $("#linesTotalQuantity").text(data.Boxes[data.Boxes.length-1].LineNumber);
+                $("#execution-percent").text(data.ExecutionPercent);
                 renderingData = data;
                 render(-1);
             },

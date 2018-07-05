@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>LoadingApp.RenderDataProvider</RootNamespace>
     <AssemblyName>LoadingApp.RenderDataProvider</AssemblyName>
-    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
   </PropertyGroup>
@@ -47,14 +47,13 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="VisualizationDataProvider.cs" />
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\LoadingApp.Data\LoadingApp.Data.csproj">
       <Project>{724a3802-5446-4950-b302-b17ec63a41f7}</Project>
       <Name>LoadingApp.Data</Name>
     </ProjectReference>
     <ProjectReference Include="..\LoadingApp.MathLib.Logic\LoadingApp.MathLib.Logic.csproj">
-      <Project>{5a55a90b-a589-4a10-b18d-959d516145eb}</Project>
+      <Project>{49bbdff4-28bf-42d9-ad85-21e0bded00e9}</Project>
       <Name>LoadingApp.MathLib.Logic</Name>
     </ProjectReference>
   </ItemGroup>

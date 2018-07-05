@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using LoadingApp.Data;
 using LoadingApp.MathLib.Logic.Interfaces;
 using LoadingApp.MathLib.Logic.MathModelingProviders;
@@ -30,9 +31,13 @@ namespace LoadingApp.MathLib.Logic.ResultsProvider
                 throw new ArgumentNullException(nameof(container));
             }
 
+            var boxesToPlaceNumber = boxesForPlacing.Sum(box => box.OrderQuantity);
+
             var loadingProgram = _loadingProgramProvider.GetLoadProgram(boxesForPlacing, container);
             var placingPlan = _placingPlanProvider.GetPlacingPlan(loadingProgram, container);
-            var executionPercent = _placingPlanProvider.CountExecutionPercent();
+
+            var boxesAfterPlacingNumber = placingPlan.SelectMany(box => box).Count();
+            var executionPercent = (double) boxesAfterPlacingNumber / boxesToPlaceNumber * 100;
 
             return new ModelingResult
             {
